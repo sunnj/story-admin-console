@@ -73,7 +73,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
   height: 45px;
-  line-height: 45px;
+  line-height: 36px;
   border-radius: 0px !important;
   .hamburger-container {
     line-height: 50px;
@@ -93,7 +93,7 @@ export default {
     }
     .user_name{
       cursor: pointer;
-      vertical-align: 15px;
+      vertical-align: 13px;
       font-size:13.5px;
     }
     .screenfull {
