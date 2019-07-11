@@ -38,6 +38,27 @@ service.interceptors.response.use(
       store.commit('SET_TOKEN', token);
     }
 
+    if(response.config && response.config.responseType == 'blob') {
+      const blob = new Blob([response.data], { type: 'application/octet-stream;charset=utf-8' }); //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet这里表示xlsx类型
+      let filename = decodeURI(response.headers['filename']);
+      if ('download' in document.createElement('a')) {
+          const downloadElement = document.createElement('a');
+          let href = ''; 
+          if(window.URL) href = window.URL.createObjectURL(blob); 
+          else href = window.webkitURL.createObjectURL(blob); 
+      　　 downloadElement.href = href;
+      　　 downloadElement.download = filename; 
+      　　 document.body.appendChild(downloadElement);
+      　　 downloadElement.click(); 
+      　　 if(window.URL) window.URL.revokeObjectURL(href); 
+          else window.webkitURL.revokeObjectURL(href); 
+          document.body.removeChild(downloadElement);
+      } else {
+          navigator.msSaveBlob(blob, filename);
+      }
+      return;
+    }
+    
     /**
      * code为非20000是抛错
      */

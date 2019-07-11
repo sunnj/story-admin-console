@@ -4,15 +4,15 @@
     <data-grid url="/sysmgr/user/list" dataName="listQuery" ref="dataList" @dataRest="onDataRest" >
       <template slot="form">
         <el-form-item label="账号">
-          <el-input v-model="listQuery.account" placeholder="账号" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.account" placeholder="账号" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="listQuery.name" placeholder="姓名" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.name" placeholder="姓名" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
       </template>
       <!--extendOperation-->
       <template slot="extendOperation">
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="modify()">新增</el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-edit" @click="modify()">新增</el-button>
       </template>
       <!--body-->
       <template slot="body">

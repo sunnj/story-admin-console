@@ -4,10 +4,11 @@
       <el-form :inline="true" class="demo-form-inline">
         <slot name="form"></slot>
         <el-form-item>
-          <el-button type="primary" class="dataGrid-form-submit" @click="onSubmit" icon="el-icon-search" v-waves>查询</el-button>
-          <el-button type="default" class="dataGrid-form-default reset" @click="onReset" icon="el-icon-refresh" v-waves>重置</el-button>
+          <el-button type="primary" class="dataGrid-form-submit" size="small" @click="onSubmit" icon="el-icon-search" v-waves>查询</el-button>
+          <el-button type="default" class="dataGrid-form-default reset" size="small" @click="onReset" icon="el-icon-refresh" v-waves>重置</el-button>
+          <slot name="extendOperation"></slot>
         </el-form-item>
-        <slot name="extendOperation"></slot>
+        
       </el-form>
     </div>
     <el-table

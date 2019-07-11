@@ -27,3 +27,45 @@
     }
   }
 }
+
+/*menu-height,font-size*/
+.el-menu-item{
+  height: 45px;
+  line-height: 45px;
+  font-size: 13.5px;
+}
+.el-submenu .el-menu-item {
+    height: 45px;
+    line-height: 45px;
+}
+.el-submenu__title {
+  height: 45px;
+  line-height: 45px;
+  font-size:13.5px;
+}
+/*tag padding*/
+.el-tag{
+  height: 25px;
+  line-height: 25px;
+}
+
+/*table padding*/
+.el-table th {
+    padding: 8px 0;
+}
+.el-table td {
+    padding: 6px 0;
+}
+.el-table {
+  font-size: 13.5px;
+}
+
+
+.el-form-item__label {
+  font-size: 13.5px;
+}
+
+.el-tree-node__label{
+  font-size:13.5px;
+}
+

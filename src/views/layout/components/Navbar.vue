@@ -72,12 +72,12 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
-  height: 50px;
-  line-height: 50px;
+  height: 45px;
+  line-height: 45px;
   border-radius: 0px !important;
   .hamburger-container {
-    line-height: 58px;
-    height: 50px;
+    line-height: 50px;
+    height: 45px;
     float: left;
     padding: 0 10px;
   }
@@ -94,6 +94,7 @@ export default {
     .user_name{
       cursor: pointer;
       vertical-align: 15px;
+      font-size:13.5px;
     }
     .screenfull {
       position: absolute;
@@ -101,15 +102,15 @@ export default {
       top: 16px;
     }
     .avatar-container {
-      height: 50px;
+      height: 45px;
       margin-right: 30px;
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 4px;
         position: relative;
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 36px;
+          height: 36px;
           border-radius: 10px;
         }
         .el-icon-caret-bottom {

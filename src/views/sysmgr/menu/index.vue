@@ -69,8 +69,8 @@
               <el-input v-model.number="formData.showOrder" placeholder="请输入..."></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submitForm">保存</el-button>
-                <el-button type="danger" v-show="nodeDeleteVisible" @click="drop">删除</el-button>
+                <el-button type="primary" @click="submitForm" size="small">保存</el-button>
+                <el-button type="danger" v-show="nodeDeleteVisible" @click="drop" size="small">删除</el-button>
               </el-form-item>
             </el-form>
           </transition>
@@ -329,7 +329,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 13.5px;
     padding-right: 8px;
 
   }
