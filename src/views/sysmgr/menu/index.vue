@@ -46,7 +46,7 @@
           <transition name="el-fade-in">
             <el-form ref="menuForm" :rules="rules" :model="formData" v-show="modifyVisible" label-width="100px" style="width: 400px;">
               <el-form-item label="权限编码" prop="code">
-                <el-cascader :options="options" expand-trigger="hover" :show-all-levels="false" :props="props_auth" style="width: 100%;"
+                <el-cascader :options="options" props.expandTrigger="hover" :show-all-levels="false" :props="props_auth" style="width: 100%;"
                   v-model="auth_path" >
                 </el-cascader>
               </el-form-item>
@@ -100,7 +100,9 @@ export default {
         name:null,
         iconClass:null,
         url:null,
-        hiddenFlag:null
+        component:null,
+        hiddenFlag:null,
+        showOrder:null
       },
       modifyVisible:false,      //表单是否显示
       nodeDeleteVisible:false,
@@ -275,8 +277,6 @@ export default {
 			    save(param).then((res) => {
 				    this.modifyVisible = false
             this.loadData()
-				  }).catch((error) => {
-            this.$message.error('系统错误，请稍后重试')
 			  	});
         } else {
           return false;
@@ -307,13 +307,9 @@ export default {
 
                 this.modifyVisible=false;
               }
-
-            }).catch((error) => {
-
             });
           }
-				}).catch(() => {
-      });
+				});
     }
   },
   mounted() {

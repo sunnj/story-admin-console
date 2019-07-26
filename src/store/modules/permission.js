@@ -34,12 +34,16 @@ function hasPermission(functions, route) {
 const permission = {
   state: {
     routers: constantRouterMap,
-    addRouters: []
+    addRouters: [],
+    btns: []
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
       state.routers =constantRouterMap.concat(routers)
+    },
+    SET_BTNS: (state, btns) => {
+      state.btns = btns
     }
   },
   actions: {

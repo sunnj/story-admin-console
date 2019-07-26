@@ -220,12 +220,8 @@ export default {
           if(res.result){
             this.userForm=res.data;
           }else{
-            console.log("resultCode:"+res.code);
             this.$message.error(res.code);
           }
-        }).catch((error) => {
-          console.log(error);
-          this.$message.error('系统错误，请稍后重试');
         });
       }else{
         this.userForm.id=null
@@ -245,8 +241,6 @@ export default {
 			    save(para).then((res) => {
 				    this.modifyVisible = false
             this.$refs.dataList.fetchData();
-				  }).catch((error) => {
-            this.$message.error('系统错误，请稍后重试')
 			  	});
         } else {
           return false;
@@ -264,8 +258,6 @@ export default {
             params.id= row.id;
             drop(params).then((res) => {
               this.$refs.dataList.fetchData();
-            }).catch((error) => {
-              this.$message.error('系统错误，请稍后重试')
             });
           }
 				}).catch(() => {
@@ -301,8 +293,6 @@ export default {
         this.roleVisible=false;
         this.currentUserId= null;
         this.defaultSelected=[];
-      }).catch((error) => {
-        this.$message.error('系统错误，请稍后重试');
       });
     }
   }

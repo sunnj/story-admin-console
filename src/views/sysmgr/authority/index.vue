@@ -15,7 +15,7 @@
           :expand-on-click-node="false"
           @node-click="selectNode" >
             <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span><i :class="data.iconClass" ></i> {{ node.label }}</span>
+              <span>{{ node.label }}</span>
               <span>
                 <el-button
                   v-show="data.id==0"
@@ -54,7 +54,7 @@
               <el-form-item label="排序" prop="showOrder">
               <el-input v-model.number="formData.showOrder" placeholder="请输入..."></el-input>
               </el-form-item>
-              <el-form-item label="描述" prop="url">
+              <el-form-item label="描述" prop="authorityDesc">
               <el-input v-model="formData.authorityDesc" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入..."></el-input>
               </el-form-item>
               <el-form-item>
@@ -83,10 +83,10 @@ export default {
 
       treeloading:false,
       formData:{                //明细表单
+        code:null,
         name:null,
-        iconClass:null,
-        url:null,
-        hiddenFlag:null
+        showOrder:null,
+        authorityDesc:null,
       },
       modifyVisible:false,      //表单是否显示
       nodeDeleteVisible:false,
@@ -204,8 +204,6 @@ export default {
 			    save(param).then((res) => {
 				    this.modifyVisible = false
             this.loadData()
-				  }).catch((error) => {
-            this.$message.error('系统错误，请稍后重试')
 			  	});
         } else {
           return false;
@@ -237,13 +235,9 @@ export default {
 
                 this.modifyVisible=false;
               }
-
-            }).catch((error) => {
-
             });
           }
-				}).catch(() => {
-      });
+				});
     }
   },
   mounted() {

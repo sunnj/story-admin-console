@@ -62,8 +62,6 @@ export default {
               type: 'success',
               duration: 5 * 1000
             })
-				  }).catch((error) => {
-            this.this.$message.error('系统错误，请稍后重试')
 			  	});
         } else {
           return false;

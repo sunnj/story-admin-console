@@ -107,14 +107,12 @@ export default {
   watch: {
     authVisible(val) {
       if(!val){
-        this.defaultSelected.splice(0,this.defaultSelected.length);
+        this.defaultSelected=[];
       }
     }
   },
   filters:{
     parseTime
-  },
-  created() {
   },
   methods: {
     onDataRest(){
@@ -135,9 +133,6 @@ export default {
           }else{
             this.tipMsgBox(res.code);
           }
-        }).catch((error) => {
-          console.log(error);
-          this.$message.error('系统错误，请稍后重试');
         });
       }else{
         roleForm.id=null
@@ -151,8 +146,6 @@ export default {
 			    save(para).then((res) => {
 				    this.modifyVisible = false
             this.$refs.dataList.fetchData();
-				  }).catch((error) => {
-            this.$message.error('系统错误，请稍后重试')
 			  	});
         } else {
           return false;
@@ -170,8 +163,6 @@ export default {
             params.id= row.id;
             drop(params).then((res) => {
               this.$refs.dataList.fetchData();
-            }).catch((error) => {
-              this.$message.error('系统错误，请稍后重试')
             });
           }
 				}).catch(() => {
@@ -189,14 +180,13 @@ export default {
           children:res.data
         }
         this.dataNodes = [node];
-        this.authTreeLoading = false;
+        
       });
 
       //获取已勾选项
       findRoleAuth({"roleId":row.id}).then(res => {
-        for(var i=0;i<res.data.length;i++){
-          this.defaultSelected.push(res.data[i]);
-        }
+        this.defaultSelected=res.data;
+        this.authTreeLoading = false;
       });
     },
     submitAuth(){
@@ -211,9 +201,6 @@ export default {
       modifyAuth(params).then((res) => {
         this.authVisible=false;
         this.currentAuthRoleId= null;
-
-      }).catch((error) => {
-        this.tipMsgBox('系统错误，请稍后重试');
       });
     }
   }

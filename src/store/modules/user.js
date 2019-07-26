@@ -7,6 +7,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
+    funcs: [],
     erp:''
   },
 
