@@ -372,7 +372,7 @@ export default {
       batchSave(params).then((res) => {
         that.searchEnumList();
         Message({
-          message: '修改成功',
+          message: '保存成功',
           type: 'success',
           duration: 5 * 1000
         })

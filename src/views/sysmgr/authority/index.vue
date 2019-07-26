@@ -71,6 +71,7 @@
 
 <script>
 import { getList,save,drop } from "@/api/sysmgr/authority";
+import { Message, MessageBox } from 'element-ui'
 export default {
   data() {
     return {
@@ -85,6 +86,8 @@ export default {
       formData:{                //明细表单
         code:null,
         name:null,
+        pid:null,
+        fullId:null,
         showOrder:null,
         authorityDesc:null,
       },
@@ -182,7 +185,8 @@ export default {
         this.parentName= data.parentName;
         this.formData.name = data.label;
         this.formData.code = data.code;
-        this.formData.pid = data.pid;
+        this.formData.pid = data.parentId;
+        this.formData.fullId=data.fullId;
         this.formData.showOrder = data.showOrder;
         this.formData.authorityDesc = data.authorityDesc;
 
@@ -202,7 +206,12 @@ export default {
             param.id= null
           }
 			    save(param).then((res) => {
-				    this.modifyVisible = false
+            this.modifyVisible = false
+            Message({
+              message: '保存成功',
+              type: 'success',
+              duration: 5 * 1000
+            })
             this.loadData()
 			  	});
         } else {

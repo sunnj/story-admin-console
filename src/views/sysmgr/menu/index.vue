@@ -82,8 +82,8 @@
 
 <script>
 import { getList,save,drop } from "@/api/sysmgr/resource";
-
 import { getList as getAuthList} from "@/api/sysmgr/authority";
+import { Message, MessageBox } from 'element-ui'
 export default {
   data() {
     return {
@@ -100,6 +100,8 @@ export default {
         name:null,
         iconClass:null,
         url:null,
+        pid:null,
+        fullId:null,
         component:null,
         hiddenFlag:null,
         showOrder:null
@@ -224,6 +226,7 @@ export default {
         this.auth_find_flag = false;
         this.auth_path = [];
         this.recursiveFindPath(data.authorityId, this.options);
+        this.auth_path.push(data.authorityId);
 
         this.modifyVisible=true;
         this.formData.id = data.id;
@@ -234,7 +237,8 @@ export default {
         this.formData.showOrder = data.showOrder;
         this.formData.url = data.url;
         this.formData.component= data.component;
-        this.formData.pid = data.pid;
+        this.formData.pid = data.parentId;
+        this.formData.fullId= data.fullId;
         this.formData.authorityId= data.authorityId;
         this.formData.hiddenFlag = data.hiddenFlag;
 
@@ -246,21 +250,14 @@ export default {
     // 递归查找当前选择的菜单的权限节点id路径
     recursiveFindPath(authid, auths) {
       for (var i = 0; i < auths.length; i++) {
-        this.auth_path.push(auths[i].id);
-        if (this.auth_find_flag) break;
-        else {
-          if (auths[i].id === authid) {
-            this.auth_find_flag = true;
-            break;
-          } else {
-            if (auths[i].children) {
-              this.recursiveFindPath(authid, auths[i].children);
-            } else {
-              this.auth_path.pop();
-            }
-          }
-          if (i === auths.length - 1) {
-            this.auth_path.pop();
+        if (auths[i].id === authid) {
+          this.auth_path.push(auths[i].id)
+          return true;
+        } else if (auths[i].children) {
+          let isPath=this.recursiveFindPath(authid, auths[i].children);
+          if(isPath){
+             this.auth_path.splice(0,0,auths[i]);
+             return true;
           }
         }
       }
@@ -275,7 +272,12 @@ export default {
           }
           param.authorityId = this.auth_path[this.auth_path.length - 1];
 			    save(param).then((res) => {
-				    this.modifyVisible = false
+            this.modifyVisible = false
+            Message({
+              message: '保存成功',
+              type: 'success',
+              duration: 5 * 1000
+            })
             this.loadData()
 			  	});
         } else {
