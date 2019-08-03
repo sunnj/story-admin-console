@@ -16,7 +16,7 @@
               首页
             </el-dropdown-item>
           </router-link>
-          <router-link class="inlineBlock" to="/editpassword" v-if="this.isErp" >
+          <router-link class="inlineBlock" to="/pwd" v-if="this.isErp" >
             <el-dropdown-item >
               修改密码
             </el-dropdown-item>

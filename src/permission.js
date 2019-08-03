@@ -67,6 +67,7 @@ export const formatRoutes = (routes)=> {
       component(resolve){
         require(['./views'+component+'.vue'], resolve)
       },
+      name:label,
       meta: {
         title: label,
         icon: iconClass

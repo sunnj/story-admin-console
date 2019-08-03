@@ -17,6 +17,9 @@ import '@/permission' // permission control
 import authority from './utils/authority'
 import './utils/constant.js'
 
+import FullCalendar from 'vue-fullcalendar'
+Vue.use(FullCalendar)
+
 Vue.use(ElementUI, { locale })
 
 Vue.use(authority);

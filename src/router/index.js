@@ -25,22 +25,45 @@ export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/login_erp', component: () => import('@/views/login/erpIndex'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
+  
   {
-    path: '/',
+    path: '',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
-    },
+    redirect: 'dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: '首页',
+        meta: { title: '首页', icon: 'dashboard', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/pwd',
+    component: Layout,
+    redirect: '/pwd/edit',
+    hidden:true,
+    children: [
     {
-      path: 'editpassword',
-      component: () => import('@/views/sysmgr/user/editpassword')
+      path: 'edit',
+      component: () => import('@/views/sysmgr/user/editpassword'),
+      name: '修改密码',
+      meta: { title: '修改密码', icon: 'edit', noCache: true }
     }]
-  }
+  },
+  {
+    path: '/calendar',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/tools/calendar'),
+        name: '待办事项',
+        meta: { title: '待办事项', icon: 'table', noCache: true }
+      }
+    ]
+  },
 ]
 
 export default new Router({
