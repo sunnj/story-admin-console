@@ -34,7 +34,7 @@ export const constantRouterMap = [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: '首页',
+        name: 'dashboard',
         meta: { title: '首页', icon: 'dashboard', noCache: true }
       }
     ]
@@ -53,12 +53,12 @@ export const constantRouterMap = [
     }]
   },
   {
-    path: '/calendar',
+    path: '/todolist',
     component: Layout,
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/tools/calendar'),
+        path: '',
+        component: () => import('@/views/tools/todolist'),
         name: '待办事项',
         meta: { title: '待办事项', icon: 'table', noCache: true }
       }
