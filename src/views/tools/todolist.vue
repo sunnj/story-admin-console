@@ -327,32 +327,13 @@ export default {
 </script>
 
 <style>
-/* .comp-full-calendar {
-    max-width:inherit;
+.fc-day-cnDate{
+  line-height: 1.3;
+  padding-left:4px;
 }
-.full-calendar-header .header-center{
-  display: inline-block;
+.fc .fc-basic-view .fc-day-number{
+  padding-right:4px;
 }
-.full-calendar-header .header-center .prev-month, .full-calendar-header .header-center .next-month{
-  padding: 0px 20px;
-  border: 1px solid #e0e0e0;
-}
-.full-calendar-header .header-center .title{
-  width:300px;
-}
-
-.full-calendar-body .weeks{
-  border-top-left-radius:5px;
-  border-top-right-radius:5px;
-  border-right: 1px solid #e0e0e0;
-}
-
-.full-calendar-body .weeks .week{
-  padding:10px 0px;
-}
-.full-calendar-body .weeks .week:last-child{
-  border-right: none;
-} */
 
 /* event level background-color */
 .full-calendar-body .dates .dates-events .events-week .events-day .event-box .level_1 {
@@ -379,16 +360,6 @@ $color: #45b984;
   min-width: 900px;
   height: 100%;
   background: #fff;
-  //   .top {
-  //     height: 100px;
-  //     h2 {
-  //       text-align: center;
-  //       font-size: 15px;
-  //     }
-  //     div {
-  //       font-size: 13px;
-  //     }
-  //   }
   .full-calendar {
     padding: 20px;
     height: calc(100% - 30px);

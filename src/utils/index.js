@@ -72,3 +72,16 @@ export function formatTime(time, option) {
 export function isExternal(path) {
   return /^(https?:|mailto:|tel:)/.test(path)
 }
+
+export function formatFileSize(size){
+  var midSize=null;
+  if(size && size>0){
+    midSize=(size/1024).toFixed(2);
+    if(midSize>=1024){
+      return (midSize/1024).toFixed(2)+"Mb";
+    }else{
+      return midSize+"Kb";
+    }
+  }
+  return size;
+}
