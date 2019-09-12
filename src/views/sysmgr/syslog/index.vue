@@ -1,10 +1,21 @@
 <template>
   <div class="app-container">
 
-    <data-grid url="/sysmgr/syslog/list" dataName="listQuery" ref="dataList" @dataRest="onDataRest" >
+    <data-grid url="/sysmgr/syslog/list" dataName="listQuery" ref="dataList" @dataRest="onDataRest" @onDataValid="dataValid" :filterStatus="filterValidStatus">
       <template slot="form">
         <el-form-item label="账号">
           <el-input v-model="listQuery.account" placeholder="账号" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
+        </el-form-item>
+        <el-form-item label="请求时间">
+          <el-date-picker
+            v-model="visitTimeRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="yyyy-MM-dd HH:mm"
+            value-format="yyyy-MM-ddHH:mm:ss">
+          </el-date-picker>
         </el-form-item>
       </template>
       <!--extendOperation-->
@@ -75,7 +86,6 @@ export default {
     parseTime
   },
   data() {
-    
     return {
       tableKey:0,
       total: 0,
@@ -85,8 +95,13 @@ export default {
         pageNo: 1,
         limit: 10,
         id: null,
-        account: null
+        account: null,
+        startDate:'',
+        endDate:''
       },
+      visitTimeRange:[],
+      filterValidStatus:true,
+
       modifyVisible:false,
       detailData:{
 
@@ -96,9 +111,17 @@ export default {
   methods: {
     onDataRest(){
       this.listQuery = {}
+      this.visitTimeRange = [];
     },
     handleFilter() {
       this.$refs.dataList.fetchData();
+    },
+    dataValid() {
+      console.log(this.visitTimeRange);
+      if(this.visitTimeRange){
+        this.listQuery.startDate= this.visitTimeRange[0];
+        this.listQuery.endDate= this.visitTimeRange[1];
+      }
     },
     detail(sysLog){
       this.modifyVisible=true

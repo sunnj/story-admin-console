@@ -38,6 +38,10 @@
       searchHandlerVisibleSet: {},
       isInitLoad: {
         default: true
+      },
+      filterStatus:{  //查询条件验证通过状态
+        default:true,
+        type:Boolean
       }
     },
     data () {
@@ -70,8 +74,15 @@
         return false;
       },
       onSubmit() {
+        let that=this;
         this.queryedData.pageNo = 1;
-        this.fetchData();
+        this.$emit('onDataValid',undefined);
+        setTimeout(function(){
+          if(that.filterStatus){
+            that.$parent[that.dataName].pageNo = 1;
+            that.fetchData();
+          }
+        },100);
       },
       fetchData(){
         var that = this;
