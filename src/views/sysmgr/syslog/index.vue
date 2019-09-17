@@ -45,7 +45,7 @@
       </template>
     </data-grid>
 
-    <el-dialog title="明细" :visible.sync="modifyVisible">
+    <el-dialog title="日志明细" :visible.sync="modifyVisible">
       <el-form :model="detailData" ref="detailForm" label-width="70px" label-position="right" style="width: 400px; margin-left:50px;">
         <el-form-item label="类/方法" prop="clazz" size="medium">
           {{detailData.clazz}}.{{detailData.methodName}}
@@ -104,7 +104,6 @@ export default {
 
       modifyVisible:false,
       detailData:{
-
       },
     };
   },
