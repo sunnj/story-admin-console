@@ -13,7 +13,7 @@
       <!--extendOperation-->
       <template slot="extendOperation">
         <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-upload2" @click="showUploadForm()">上传</el-button>
-      </template>      
+      </template>
       <!--body-->
       <template slot="body">
         <el-table-column align="center" prop="id" label="ID" width="80px"></el-table-column>

@@ -51,19 +51,7 @@ export const constantRouterMap = [
       name: '修改密码',
       meta: { title: '修改密码', icon: 'edit', noCache: true }
     }]
-  },
-  {
-    path: '/todolist',
-    component: Layout,
-    children: [
-      {
-        path: '',
-        component: () => import('@/views/tools/todolist'),
-        name: '待办事项',
-        meta: { title: '待办事项', icon: 'table', noCache: true }
-      }
-    ]
-  },
+  }
 ]
 
 export default new Router({

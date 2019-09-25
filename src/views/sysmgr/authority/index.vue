@@ -145,7 +145,7 @@ export default {
       const newChild = {
         'id': this.newTempNodId(),
         'label': '新增权限',
-        'pid': data.id,
+        'parentId': data.id,
         'parentName':data.label,
         'children': []
       };

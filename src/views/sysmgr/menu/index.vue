@@ -188,7 +188,7 @@ export default {
       const newChild = {
         'id': this.newTempNodId(),
         'label': '新增菜单',
-        'pid': data.id,
+        'parentId': data.id,
         'parentName':data.label,
         'children': []
       };
