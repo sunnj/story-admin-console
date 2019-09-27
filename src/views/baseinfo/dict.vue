@@ -13,7 +13,7 @@
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" ></el-table-column>
+        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
         <el-table-column align="center" prop="code" label="编号" ></el-table-column>
         <el-table-column align="center" prop="chnName" label="中文名称" ></el-table-column>
         <el-table-column align="center" prop="showOrder" label="排序" ></el-table-column>

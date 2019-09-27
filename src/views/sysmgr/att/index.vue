@@ -16,7 +16,7 @@
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" width="80px"></el-table-column>
+        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
         <!-- <el-table-column align="center" prop="name" label="名称" ></el-table-column> -->
         <el-table-column align="center" prop="originName" label="源文件名" ></el-table-column>
         <el-table-column align="center" prop="slotId" label="批次" ></el-table-column>
