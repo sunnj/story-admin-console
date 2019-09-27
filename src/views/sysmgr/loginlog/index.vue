@@ -12,7 +12,7 @@
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" ></el-table-column>
+        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
         <el-table-column align="center" prop="account" label="账号" ></el-table-column>
         <el-table-column label="访问时间">
           <template slot-scope="scope">

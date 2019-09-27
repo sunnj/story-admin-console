@@ -13,7 +13,7 @@
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" ></el-table-column>
+        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
         <el-table-column align="center" prop="name" label="名称" ></el-table-column>
         <el-table-column align="center" prop="roleDesc" label="描述" ></el-table-column>
         <el-table-column align="center" prop="createdTime" label="创建时间">

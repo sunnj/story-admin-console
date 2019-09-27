@@ -16,7 +16,7 @@
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" ></el-table-column>
+        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
         <el-table-column align="center" prop="account" label="账号" ></el-table-column>
         <el-table-column align="center" prop="name" label="姓名" ></el-table-column>
         <el-table-column align="center" prop="email"  label="邮箱"></el-table-column>

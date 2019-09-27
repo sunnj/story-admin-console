@@ -25,12 +25,12 @@
       <template slot="body">
         <el-table-column align="left" prop="url" label="URL" ></el-table-column>
         <el-table-column align="left" prop="uri" label="URI" ></el-table-column>
-        <el-table-column align="center" prop="requestMethod" label="请求方式" ></el-table-column>
-        <el-table-column align="right" prop="spendTime" label="请求耗时" ></el-table-column>
+        <el-table-column align="center" prop="requestMethod" label="请求方式" width="90px"></el-table-column>
+        <el-table-column align="right" prop="spendTime" label="请求耗时" width="90px"></el-table-column>
         <el-table-column align="left" prop="clazz" label="类名" ></el-table-column>
-        <el-table-column align="left" prop="methodName" label="方法名" ></el-table-column>
+        <el-table-column align="left" prop="methodName" label="方法名" width="100px"></el-table-column>
         <el-table-column align="left" prop="params" label="请求参数" :show-overflow-tooltip="true" ></el-table-column>
-        <el-table-column align="center" prop="account" label="用户" ></el-table-column>
+        <el-table-column align="center" prop="account" label="用户" width="100px"></el-table-column>
         <el-table-column align="center" prop="visitTime" label="用户" >
           <template slot-scope="scope">
             <span>{{ scope.row.visitTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
@@ -46,16 +46,14 @@
     </data-grid>
 
     <el-dialog title="日志明细" :visible.sync="modifyVisible">
-      <el-form :model="detailData" ref="detailForm" label-width="70px" label-position="right" style="width: 400px; margin-left:50px;">
+      <el-form :model="detailData" ref="detailForm" label-width="70px" label-position="right" style="margin-left:50px;">
         <el-form-item label="类/方法" prop="clazz" size="medium">
           {{detailData.clazz}}.{{detailData.methodName}}
         </el-form-item>
         <el-form-item label="请求方式" prop="methodName" >
           {{detailData.methodName}}
         </el-form-item>
-        <el-form-item label="参数" prop="email" >
-          {{detailData.params}}
-        </el-form-item>
+        <json-editor ref="jsonEditor" v-model="detailData.params" />
         <el-form-item label="用户" prop="account" >
           {{detailData.account}}
         </el-form-item>
@@ -73,14 +71,14 @@
 <script>
 import { getList,findById} from "@/api/sysmgr/syslog";
 
-
+import JsonEditor from '@/components/JsonEditor'
 import DataGrid from "@/components/DataGrid";
 import { parseTime } from '@/utils'
 import waves from "@/directive/waves"; // Waves directive
 
 export default {
   name: "User",
-  components: { DataGrid },
+  components: { DataGrid, JsonEditor},
   directives: { waves },
   filters: {
     parseTime
@@ -131,6 +129,9 @@ export default {
         findById(params).then((res) => {
           if(res.result){
             this.detailData=res.data;
+            if(res.data.params){
+              res.data.params=JSON.parse(res.data.params);
+            }
           }else{
             this.$message.error(res.code);
           }
@@ -140,3 +141,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.editor-container{
+  position: relative;
+  height: 100%;
+}
+</style>
