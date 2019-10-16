@@ -16,6 +16,7 @@
       :data="list"
       element-loading-text="Loading"
       border
+      :stripe="true"
       fit
       highlight-current-row>
       <slot name="body"></slot>
