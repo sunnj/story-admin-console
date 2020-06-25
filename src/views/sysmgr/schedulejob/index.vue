@@ -4,23 +4,25 @@
     <data-grid url="/sysmgr/schedulejob/list" dataName="listQuery" ref="dataList" @dataRest="onDataRest" >
       <template slot="form">
         <el-form-item label="任务编码">
-          <el-input v-model="listQuery.jobId" placeholder="任务编码" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.jobId" placeholder="任务编码" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
         <el-form-item label="任务名称">
-          <el-input v-model="listQuery.jobName" placeholder="任务名称" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.jobName" placeholder="任务名称" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
       </template>
       <!--extendOperation-->
       <template slot="extendOperation">
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-edit" @click="modify()">新增</el-button>
+        <el-form-item>
+          <el-button class="filter-item" type="primary" size="mini" icon="el-icon-edit" @click="modify()" v-show="hasAuthority('sysmgr.schedulejob.save')">新增</el-button>
+        </el-form-item>
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="jobId" label="任务编码" ></el-table-column>
-        <el-table-column align="center" prop="jobName" label="任务名称" ></el-table-column>
-        <el-table-column align="center" prop="startJob" label="启动状态" >
+        <el-table-column align="left" prop="jobId" label="任务编码" width="180px"></el-table-column>
+        <el-table-column align="left" prop="jobName" label="任务名称" ></el-table-column>
+        <el-table-column align="center" prop="startJob" label="启动状态" width="80px">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.startJob | statusTagFilter">{{ scope.row.startJob | statusFilter }}</el-tag>
+            <el-tag :type="scope.row.startJob | parseEnum(disabledOptions)">{{ scope.row.startJob | parseEnum(statusOptions) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="startTime"  label="启动时间">
@@ -51,16 +53,16 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="modify(scope.row)" >编辑</el-button>
-            <el-button type="danger" size="mini" @click="dropRow(scope.row)" >删除</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" @click="modify(scope.row)" title="编辑" v-show="hasAuthority('sysmgr.schedulejob.save')"></el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete"  @click="dropRow(scope.row)" title="删除" v-show="hasAuthority('sysmgr.schedulejob.delete')"></el-button>
           </template>
         </el-table-column>
       </template>
     </data-grid>
 
     <el-dialog title="任务信息" :visible.sync="modifyVisible">
-      <el-form :model="scheduleForm" :rules="rules" ref="scheduleForm" label-width="100px"  label-position="right" style="width: 400px; margin-left:50px;">
-        <el-form-item label="任务编号" prop="jobId" size="medium">
+      <el-form :model="scheduleForm" :rules="rules" ref="scheduleForm" label-width="100px"  label-position="right" size="small" style="width: 400px; margin-left:50px;">
+        <el-form-item label="任务编号" prop="jobId">
           <el-select v-model="scheduleForm.jobId" placeholder="请选择..." @change="onScheduleChanged" style="width:300px;">
             <el-option
               v-for="item in jobIdOptions"
@@ -78,7 +80,7 @@
         </el-form-item>
         <el-form-item label="是否启动" prop="startJob" >
           <el-switch
-            v-model="scheduleForm.startJob"
+            v-model="startJobTemp"
             active-text="是"
             inactive-text="否">
           </el-switch>
@@ -100,44 +102,26 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="modifyVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="modifyVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="submitForm" size="small" v-show="hasAuthority('sysmgr.schedulejob.save')">确 定</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
 import { getList,findById,save,drop,getJobCombo} from "@/api/sysmgr/schedulejob";
-
 import DataGrid from "@/components/DataGrid";
-import { parseTime } from '@/utils'
+import { statusEnums,yesOrNoEnums,disabledEnums,statusStyleEnums} from '@/utils/enum'
+import { parseTime,parseEnum } from '@/utils'
 import waves from "@/directive/waves"; // Waves directive
 
-const statusOptions=[{'key':'正常','value':true}, {'key':'禁用','value':false}]
-
-const statusTypeKeyValue = statusOptions.reduce((acc, cur) => {
-  acc[cur.value] = cur.key
-  return acc
-}, {})
-
-
 export default {
-  name: "Schedule-Job",
+  name: "sysmgrschedulejob",
   components: { DataGrid },
   directives: { waves },
   filters: {
-    statusFilter(status) {
-      return statusTypeKeyValue[status+""]
-    },
-    statusTagFilter(status){
-      const statusMap = {
-        "true": 'success',
-        "false": 'danger'
-      }
-      return statusMap[status]
-    },
+    parseEnum,
     parseTime
   },
   data() {
@@ -154,7 +138,8 @@ export default {
       },
 
       modifyVisible:false,
-      statusOptions:statusOptions,
+      statusOptions:statusEnums,
+      disabledOptions:disabledEnums,
       jobIdOptions:[],
       scheduleForm:{
         id:null,
@@ -162,7 +147,7 @@ export default {
         jobName:'',
         cron:'',
         jobClass:'',
-        startJob:0,
+        startJob:"0",
         startTime:'',
         jobDesc: ''
       },
@@ -176,7 +161,8 @@ export default {
         cron: [
           { required: true, message: 'Cron表达式是必填项', trigger: 'blur' }
         ]
-      }
+      },
+      startJobTemp:false
     };
   },
   watch: {
@@ -187,9 +173,17 @@ export default {
         this.scheduleForm.jobName= null;
         this.scheduleForm.cron=null;
         this.scheduleForm.jobClass=null;
-        this.scheduleForm.startJob=0;
+        this.scheduleForm.startJob="0";
         this.scheduleForm.startTime=null;
         this.scheduleForm.jobDesc= null;
+        this.startJobTemp=false;
+      }
+    },
+    startJobTemp(val) {
+      if(val){
+        this.scheduleForm.startJob="1";
+      }else{
+        this.scheduleForm.startJob="0";
       }
     }
   },
@@ -201,6 +195,7 @@ export default {
   methods: {
     onDataRest(){
       this.listQuery = {}
+      this.startJobTemp=0;
     },
     handleFilter() {
       this.$refs.dataList.fetchData();
@@ -214,6 +209,11 @@ export default {
         findById(params).then((res) => {
           if(res.result){
             this.scheduleForm=res.data;
+            if(res.data.startJob=='1'){
+              this.startJobTemp=true;
+            }else{
+              this.startJobTemp=false;
+            }
           }else{
             this.$message.error(res.code);
           }

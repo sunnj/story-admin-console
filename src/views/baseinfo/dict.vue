@@ -9,23 +9,26 @@
       </template>
       <!--extendOperation-->
       <template slot="extendOperation">
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-edit" @click="modify()">新增</el-button>
+        <el-form-item>
+          <el-button class="filter-item" type="primary" size="mini" icon="el-icon-edit" @click="modify()">新增</el-button>
+        </el-form-item>
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
-        <el-table-column align="center" prop="code" label="编号" ></el-table-column>
-        <el-table-column align="center" prop="chnName" label="中文名称" ></el-table-column>
+        <el-table-column type="index" width="50" align="center" :index="indexMethod" fixed="left"></el-table-column>
+        <el-table-column align="left" prop="code" label="编号" ></el-table-column>
+        <el-table-column align="left" prop="chnName" label="中文名称" ></el-table-column>
+        <el-table-column align="left" prop="engName" label="英文名称" ></el-table-column>
         <el-table-column align="center" prop="showOrder" label="排序" ></el-table-column>
         <el-table-column label="创建时间">
           <template slot-scope="scope">
             <span>{{ scope.row.createdTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" width="170" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="modify(scope.row)" >编辑</el-button>
-            <el-button type="danger" size="mini" @click="dropRow(scope.row)" >删除</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" @click="modify(scope.row)" title="编辑"></el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="dropRow(scope.row)" title="删除"></el-button>
           </template>
         </el-table-column>
       </template>
@@ -33,10 +36,10 @@
 
     <el-dialog :visible.sync="modifyVisible">
       <el-tabs v-model="tabName" @tab-click="handleClick">
-				<el-tab-pane label="详情" name="baseInfo">
-          <el-form :model="dictForm" :rules="rules" ref="dictForm" label-width="70px"  label-position="right" style="width: 400px; margin-left:50px;">
-            <el-form-item label="编码" prop="code" size="medium">
-              <el-input v-model="dictForm.code" class="filter-item" placeholder="请输入账号" ></el-input>
+				<el-tab-pane label="字典详情" name="baseInfo">
+          <el-form :model="dictForm" :rules="rules" ref="dictForm" label-width="70px"  label-position="right" size="small" style="width: 400px; margin-left:50px;">
+            <el-form-item label="编码" prop="code" >
+              <el-input v-model="dictForm.code" placeholder="请输入账号" ></el-input>
             </el-form-item>
             <el-form-item label="中文名" prop="chnName" >
               <el-input v-model="dictForm.chnName" placeholder="请输入..."></el-input>
@@ -48,54 +51,54 @@
               <el-input v-model="dictForm.showOrder" placeholder="请输入..."></el-input>
             </el-form-item>
           </el-form>
-          <div class="dialog-footer" style="overflow:hidden;text-align:right;margin-top:20px;">
-            <el-button @click="modifyVisible = false">取 消</el-button>
-            <el-button type="primary" @click="submitForm">确 定</el-button>
+          <div class="dialog-footer">
+            <el-button size="small" @click="modifyVisible = false">取 消</el-button>
+            <el-button type="primary" size="small" @click="submitForm">确 定</el-button>
           </div>
 				</el-tab-pane>
-        <el-tab-pane label="枚举" name="dictMnt" :disabled="!isShowDictMnt" >
-					<el-form>
+        <el-tab-pane label="枚举值" name="dictMnt" :disabled="!isShowDictMnt" >
+					<el-form class="dialogTable" size="small">
 						<div style="text-align:right;">
-							<el-button type="primary" @click.native="appendEnum" size="small"><i class="fa fa-plus-circle" aria-hidden="true"></i>新增</el-button>
+							<el-button type="primary" @click.native="appendEnum" size="mini"><i class="fa fa-plus-circle" aria-hidden="true"></i>新增</el-button>
 						</div>
-						<el-table :data="dictMntList.dictMnts" ref="multipleTable" stripe tooltip-effect="dark"
+						<el-table :data="dictMntList.dictMnts" ref="multipleTable" stripe tooltip-effect="dark" 
 							v-loading="dictMntList.listLoading" @row-click="enumRowClick"
 							style="width: 100%;" size=small>
 							<el-table-column type="index"	width="50"></el-table-column>
-							<el-table-column prop="code" label="编码" sortable='custom' show-overflow-tooltip>
+							<el-table-column prop="code" label="编码" show-overflow-tooltip>
                 <template slot-scope="scope" >
                   <span v-if="scope.row.modifyFlag">
-                    <el-input v-model="scope.row.code" type="text" placeholder="请输入..." style="width:100%" ></el-input>
+                    <el-input v-model="scope.row.code" type="text" placeholder="请输入..." style="width:100%" size="small"></el-input>
                   </span>
                   <span v-else>
                     {{scope.row.code}}
                   </span>
                 </template>
               </el-table-column>
-							<el-table-column prop="chnName" label="名称" sortable='custom' show-overflow-tooltip>
+							<el-table-column prop="chnName" label="名称" show-overflow-tooltip>
                 <template slot-scope="scope" >
                   <span v-if="scope.row.modifyFlag">
-                    <el-input v-model="scope.row.chnName" type="text" placeholder="请输入..." style="width:100%" ></el-input>
+                    <el-input v-model="scope.row.chnName" type="text" placeholder="请输入..." style="width:100%"  size="small"></el-input>
                   </span>
                   <span v-else>
                     {{scope.row.chnName}}
                   </span>
                 </template>
               </el-table-column>
-							<el-table-column prop="engName" label="英文" sortable='custom' show-overflow-tooltip>
+							<el-table-column prop="engName" label="英文" show-overflow-tooltip>
                 <template slot-scope="scope" >
                   <span v-if="scope.row.modifyFlag">
-                    <el-input v-model="scope.row.engName" type="text" placeholder="请输入..." style="width:100%" ></el-input>
+                    <el-input v-model="scope.row.engName" type="text" placeholder="请输入..." style="width:100%" size="small"></el-input>
                   </span>
                   <span v-else>
                     {{scope.row.engName}}
                   </span>
                 </template>
               </el-table-column>
-							<el-table-column prop="showOrder" label="排序" sortable='custom'>
+							<el-table-column prop="showOrder" label="排序" >
                 <template slot-scope="scope" >
                   <span v-if="scope.row.modifyFlag">
-                    <el-input v-model="scope.row.showOrder" type="text" placeholder="请输入..." style="width:100%" ></el-input>
+                    <el-input v-model="scope.row.showOrder" type="text" placeholder="请输入..." style="width:100%" size="small"></el-input>
                   </span>
                   <span v-else>
                     {{scope.row.showOrder}}
@@ -104,7 +107,7 @@
               </el-table-column>
               <el-table-column label="操作"  align="center" width="100" class-name="small-padding fixed-width">
                 <template slot-scope="scope" >
-                  <el-button type="danger" size="mini" @click="removeEnum(scope.$index, scope.row)" >移除</el-button>
+                  <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeEnum(scope.$index, scope.row)" title="移除"></el-button>
                 </template>
               </el-table-column>
 						</el-table>
@@ -119,9 +122,9 @@
 							:total="dictMntList.total">
 						</el-pagination>
             </div>
-            <div class="dialog-footer" style="overflow:hidden;text-align:right;margin-top:20px;">
-              <el-button @click="searchEnumList">重 置</el-button>
-              <el-button type="primary" @click="saveEnumList">保 存</el-button>
+            <div class="dialog-footer" >
+              <el-button size="small" @click="searchEnumList">重 置</el-button>
+              <el-button type="primary" size="small" @click="saveEnumList">保 存</el-button>
             </div>
 					</el-form>
 				</el-tab-pane>
@@ -139,7 +142,7 @@ import { Message, MessageBox } from 'element-ui'
 import waves from "@/directive/waves"; // Waves directive
 
 export default {
-  name: "Dict",
+  name: "baseinfodict",
   components: { DataGrid },
   directives: { waves },
   filters: {
@@ -174,6 +177,7 @@ export default {
         id:'',
         code:'',
         chnName:'',
+        engName:'',
         showOrder:'',
       },
       rules: {
@@ -183,7 +187,7 @@ export default {
       },
 
       tabName: '',  //Tab选择标签名称
-      isShowDictMnt:false,  //枚举是否disabled
+      isShowDictMnt:false,  //枚举是否可用
       dictMntList:{
         // 列表查询条件封装对象
         filters: {
@@ -202,7 +206,17 @@ export default {
       selectedEnumRow:{}
     };
   },
+  watch: {
+    modifyVisible(val) {
+      if(!val){
+        this.isShowDictMnt = false;
+      }
+    }
+  },
   methods: {
+    indexMethod(index) {
+      return index + ((this.listQuery.pageNo-1) * this.listQuery.limit) + 1;
+    },
     onDataRest(){
       this.listQuery.pageNo= 1
         this.listQuery.limit=PAGE_SIZE
@@ -381,3 +395,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.dialog-footer{
+  text-align: right;
+}
+</style>

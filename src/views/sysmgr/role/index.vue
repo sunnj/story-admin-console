@@ -4,41 +4,44 @@
     <data-grid url="/sysmgr/role/list" dataName="listQuery" ref="dataList" @dataRest="onDataRest" >
       <template slot="form">
         <el-form-item label="名称">
-          <el-input v-model="listQuery.name" placeholder="名称" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.name" placeholder="名称" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
       </template>
       <!--extendOperation-->
       <template slot="extendOperation">
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-edit" @click="modify()">新增</el-button>
+        <el-form-item>
+          <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="modify()" v-show="hasAuthority('sysmgr.role.save')">新增</el-button>
+        </el-form-item>
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
-        <el-table-column align="center" prop="name" label="名称" ></el-table-column>
-        <el-table-column align="center" prop="roleDesc" label="描述" ></el-table-column>
+        <el-table-column type="index" width="50" align="center" :index="indexMethod" fixed="left"></el-table-column>
+        <el-table-column align="left" prop="name" label="名称" ></el-table-column>
+        <el-table-column align="left" prop="roleDesc" label="描述" ></el-table-column>
+        <el-table-column align="center" prop="modifiedTime" label="编辑时间">
+          <template slot-scope="scope">{{ scope.row.modifiedTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</template>
+        </el-table-column>
         <el-table-column align="center" prop="createdTime" label="创建时间">
           <template slot-scope="scope">{{ scope.row.createdTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="modify(scope.row)" >编辑</el-button>
-
-            <el-button size="mini" @click="auth(scope.row)" >权限</el-button>
-
-            <el-button type="danger" size="mini" @click="dropRow(scope.row)" >删除</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" @click="modify(scope.row)" title="编辑" v-show="hasAuthority('sysmgr.role.save')"></el-button>
+            <el-button size="mini" icon="el-icon-user" @click="auth(scope.row)" title="权限" v-show="hasAuthority('sysmgr.role.save')"></el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="dropRow(scope.row)" title="删除" v-show="hasAuthority('sysmgr.role.delete')"></el-button>
           </template>
         </el-table-column>
       </template>
     </data-grid>
     <el-dialog title="角色信息" :visible.sync="modifyVisible">
-      <el-form :model="roleForm" :rules="rules" ref="roleForm" label-width="70px" label-position="right" style="width: 400px; margin-left:50px;">
-        <el-form-item label="名称" prop="account" size="medium">
+      <el-form :model="roleForm" :rules="rules" ref="roleForm" label-width="70px" label-position="right" size="small" style="width: 400px; margin-left:50px;">
+        <el-form-item label="名称" prop="account">
           <el-input v-model="roleForm.name" class="filter-item" placeholder="请输入角色名称" ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="modifyVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="modifyVisible = false" size="small" >取 消</el-button>
+        <el-button type="primary" @click="submitForm" size="small" v-show="hasAuthority('sysmgr.role.save')">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -53,8 +56,8 @@
         :expand-on-click-node="false" >
       </el-tree>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="authVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitAuth">确 定</el-button>
+        <el-button @click="authVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="submitAuth" size="small" v-show="hasAuthority('sysmgr.role.save')">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -68,7 +71,7 @@ import { parseTime } from '@/utils'
 import DataGrid from "@/components/DataGrid";
 import waves from "@/directive/waves"; // Waves directive
 export default {
-  name: "Role",
+  name: "sysmgrrole",
   components: { DataGrid },
   directives: { waves },
   filters: {
@@ -115,6 +118,9 @@ export default {
     parseTime
   },
   methods: {
+    indexMethod(index) {
+      return index + ((this.listQuery.pageNo-1) * this.listQuery.limit) + 1;
+    },
     onDataRest(){
       this.listQuery = {}
     },

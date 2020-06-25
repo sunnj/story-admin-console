@@ -4,30 +4,32 @@
     <data-grid url="/sysmgr/att/list" dataName="listQuery" ref="dataList" @dataRest="onDataRest" >
       <template slot="form">
         <el-form-item label="名称">
-          <el-input v-model="listQuery.originName" placeholder="文件名" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.originName" placeholder="文件名" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
         <el-form-item label="批次">
-          <el-input v-model="listQuery.slotId" placeholder="批次" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.slotId" placeholder="批次" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
       </template>
       <!--extendOperation-->
       <template slot="extendOperation">
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-upload2" @click="showUploadForm()">上传</el-button>
+        <el-form-item>
+          <el-button class="filter-item" type="primary" size="mini" icon="el-icon-upload2" @click="showUploadForm()" v-show="hasAuthority('sysmgr.att.upload')">上传</el-button>
+        </el-form-item>
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
+        <el-table-column type="index" width="50" align="center" :index="indexMethod" fixed="left"></el-table-column>
         <!-- <el-table-column align="center" prop="name" label="名称" ></el-table-column> -->
-        <el-table-column align="center" prop="originName" label="源文件名" ></el-table-column>
-        <el-table-column align="center" prop="slotId" label="批次" ></el-table-column>
+        <el-table-column prop="originName" label="源文件名" width="150" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="slotId" label="批次" width="150" show-overflow-tooltip></el-table-column>
         <!-- <el-table-column align="center" prop="fileCate" label="分类" ></el-table-column> -->
-        <el-table-column align="center" prop="type" label="类型" ></el-table-column>
+        <el-table-column align="center" prop="type" label="类型" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="fileSize" label="大小" >
           <template slot-scope="scope">
             <span>{{ scope.row.fileSize | formatFileSize }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="path" label="路径" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column align="center" prop="path" label="路径" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="description" label="描述" ></el-table-column>
         <el-table-column label="创建时间">
           <template slot-scope="scope">
@@ -36,7 +38,7 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="120" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="dropRow(scope.row)" >删除</el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="dropRow(scope.row)" title="删除" v-show="hasAuthority('sysmgr.att.delete')"></el-button>
           </template>
         </el-table-column>
       </template>
@@ -71,8 +73,8 @@
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="submitUpload" type="primary" size="mini" :loading="uploadLoading" > 确定上传</el-button>
-        <el-button @click="uploadVisible=false" size="mini">取消</el-button>
+        <el-button @click="uploadVisible=false" size="small">取消</el-button>
+        <el-button @click="submitUpload" type="primary" :loading="uploadLoading" size="small"> 确定上传</el-button>
       </span>
     </el-dialog>
   </div>
@@ -86,7 +88,7 @@ import { parseTime,formatFileSize } from '@/utils'
 import waves from "@/directive/waves"; // Waves directive
 
 export default {
-  name: "User",
+  name: "sysmgratt",
   components: { DataGrid },
   directives: { waves },
   filters: {
@@ -110,7 +112,7 @@ export default {
 
       importHeaders: {Authorization: getToken()},
       fileList: [],
-      uploadAction: process.env.BASE_API + "/sysmgr/att/upload",
+      uploadAction: process.env.VUE_APP_BASE_API + "/sysmgr/att/upload",
       uploadVisible:false,
       uploadLoading:false,
       acceptFileType:".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF,.ZIP,.RAR",
@@ -121,6 +123,9 @@ export default {
     };
   },
   methods: {
+    indexMethod(index) {
+      return index + ((this.listQuery.pageNo-1) * this.listQuery.limit) + 1;
+    },
     onDataRest(){
       this.listQuery = {}
     },

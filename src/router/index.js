@@ -24,7 +24,8 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/login_erp', component: () => import('@/views/login/erpIndex'), hidden: true },
-  { path: '/404', component: () => import('@/views/404'), hidden: true },
+  { path: '/404', component: () => import('@/views/error-page/404'), hidden: true },
+  { path: '/401', component: () => import('@/views/error-page/401'), hidden: true },
   
   {
     path: '',
@@ -51,7 +52,8 @@ export const constantRouterMap = [
       name: '修改密码',
       meta: { title: '修改密码', icon: 'edit', noCache: true }
     }]
-  }
+  },
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({

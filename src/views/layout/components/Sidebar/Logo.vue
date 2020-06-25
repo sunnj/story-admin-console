@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import logo from "@/assets/pub/logo.png";
 export default {
   name: 'SidebarLogo',
   props: {
@@ -24,8 +25,8 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Element Admin',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: 'Story Admin',
+      logo:logo
     }
   }
 }
@@ -46,7 +47,7 @@ export default {
   width: 100%;
   height: 45px;
   line-height: 45px;
-  background: #2b2f3a;
+  background: #3b3f51;
   text-align: center;
   overflow: hidden;
 
@@ -55,10 +56,9 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
       height: 32px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: 10px;
     }
 
     & .sidebar-title {

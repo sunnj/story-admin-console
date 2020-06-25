@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">{{ name }}，你好！</div>
-    <div class="dashboard-text">欢迎登陆 STORY-ADMIN </div>
+    <div class="dashboard-text">欢迎登陆 Story Admin </div>
     <component :is="currentRole"/>
   </div>
 </template>
@@ -11,7 +11,7 @@ import { mapGetters } from 'vuex'
 import adminDashboard from './admin'
 
 export default {
-  name: 'Dashboard',
+  name: 'dashboard',
   components: { adminDashboard },
   data() {
     return {
@@ -30,7 +30,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .dashboard {
   &-container {
-    margin: 30px;
+    margin: 10px 20px;
     text-align: center;
   }
   &-text {

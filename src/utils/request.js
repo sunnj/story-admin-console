@@ -5,9 +5,9 @@ import { setToken,getToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api 的 base_url
-  timeout: 20000// 请求超时时间
-  , withCredentials:true
+  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
+  timeout: 20000,// 请求超时时间 
+  withCredentials:true
 })
 
 // request拦截器
@@ -64,7 +64,7 @@ service.interceptors.response.use(
      */
     const res = response.data
     // console.log('service.interceptors.response res code=' + res.code)
-    if (res.code !== 20000) {
+    if (res.code !== RESULT_SUCCESS_CODE && res.code !== RESULT_IN_PROCESS_CODE) {
       Message({
         message: res.message,
         type: 'error',

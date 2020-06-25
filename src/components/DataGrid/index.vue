@@ -1,27 +1,33 @@
 <template>
   <div class="dataGrid">
     <div class="search-handler" v-show="searchHandlerVisible">
-      <el-form :inline="true" class="demo-form-inline">
+      <el-form :inline="true" class="demo-form-inline" size="small">
         <slot name="form"></slot>
         <el-form-item>
-          <el-button type="primary" class="dataGrid-form-submit" size="small" @click="onSubmit" icon="el-icon-search" v-waves>查询</el-button>
-          <el-button type="default" class="dataGrid-form-default reset" size="small" @click="onReset" icon="el-icon-refresh" v-waves>重置</el-button>
-          <slot name="extendOperation"></slot>
+          <el-button type="primary" class="dataGrid-form-submit" size="mini" @click="onSubmit" icon="el-icon-search" v-waves>查询</el-button>
+          <el-button type="default" class="dataGrid-form-default reset" size="mini" @click="onReset" icon="el-icon-refresh" v-waves>重置</el-button>
         </el-form-item>
-        
+        <slot name="extendOperation"></slot>
       </el-form>
     </div>
-    <el-table
+    <el-table 
+      ref="datagridTable"
+      @selection-change="handleSelectionChangeEvent"
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
-      border
       :stripe="true"
       fit
-      highlight-current-row>
+      highlight-current-row
+      :max-height="maxHeight"
+      :show-summary="showSummary"
+      :summary-method="summaryMethod"
+      :default-sort = defaultSort
+      @sort-change="onSortChange"
+      @row-click="handleRowClickEvent">
       <slot name="body"></slot>
     </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="queryedData.pageNo" :limit.sync="queryedData.limit" @pagination="fetchData" />
+    <pagination v-show="total>0" :total="total" :page.sync="queryedData.pageNo" :limit.sync="queryedData.limit" @pagination="fetchData" :pageSizes="pageSizes" />
   </div>
 </template>
 
@@ -43,6 +49,26 @@
       filterStatus:{  //查询条件验证通过状态
         default:true,
         type:Boolean
+      },
+      limit: {  //页大小
+        type: Number,
+        default:PAGE_SIZE
+      },
+      pageSizes: {  //分页选项
+        type: Array
+      },
+      defaultSort:{ //默认排序
+        type:Object
+      },
+      maxHeight:{ //Table最大高度
+        default:null
+      },
+      showSummary:{ //显示合计行
+        default:false,
+        type:Boolean
+      },
+      summaryMethod:{ //自定义合计
+        default:null
       }
     },
     data () {
@@ -52,26 +78,27 @@
         listLoading:false,
         queryedData:{
           pageNo:1,
-          limit:10
+          limit:null
         },
         searchHandlerVisible:true,
       }
     },
     created: function() {
-//      console.log("created=>",this.isInitLoad);
-      var that = this;
-      if("false" === that.searchHandlerVisibleSet) {
-        that.searchHandlerVisible = false;
+      if("false" === this.searchHandlerVisibleSet) {
+        this.searchHandlerVisible = false;
       }
       //是否进行初始化加载
-      if(that.isInitLoad) {
+      if(this.isInitLoad) {
         this.onSubmit();
       }
     },
     methods: {
       onReset: function() {
-        var that = this;
-        that.$emit('dataRest', undefined);
+        this.$emit('dataRest', undefined);
+        return false;
+      },
+      onSortChange: function(column, prop, order) {
+        this.$emit("sortChange", column, prop, order);
         return false;
       },
       onSubmit() {
@@ -87,39 +114,30 @@
       },
       fetchData(){
         var that = this;
+        that.queryedData.limit=this.limit;
         that.listLoading = true;
-//        console.log('parent=>',that.$parent[that.dataName].pageNo,that.$parent[that.dataName].limit)
-//        console.log('query=>', this.queryedData.pageNo,this.queryedData.limit)
         setTimeout(() => {
           that.$parent[that.dataName].pageNo = parseInt(this.queryedData.pageNo);
-//          that.$parent[that.dataName].limit = that.$parent[that.dataName].limit ? parseInt(that.$parent[that.dataName].limit) : parseInt(this.queryedData.limit);
           that.$parent[that.dataName].limit = parseInt(this.queryedData.limit);
           getRequest(that.url, that.$parent[that.dataName]).then(response => {
             this.total = response.data.total
             this.list = response.data.records
-//            console.log("fetchData list length=>",this.list.length);
-//            console.log('parent=>',that.$parent[that.dataName].pageNo,that.$parent[that.dataName].limit)
-//            console.log('query=>', this.queryedData.pageNo,this.queryedData.limit)
+            this.$emit('onDataLoadSuccess',response);
             this.listLoading = false
           })
         }, 100)
-        /*console.log('parent=>',that.$parent[that.dataName].pageNo,that.$parent[that.dataName].limit)
-        console.log('query=>', this.queryedData.pageNo,this.queryedData.limit)
-        that.$parent[that.dataName].pageNo = parseInt(this.queryedData.pageNo);
-        that.$parent[that.dataName].limit = parseInt(this.queryedData.limit)/!* ? parseInt(that.$parent[that.dataName].limit) : this.queryedData.limit*!/;
-        getList(that.$parent[that.dataName]).then(response => {
-          this.total = response.data.total
-          this.list = response.data.records
-          console.log("fetchData list length=>",this.list.length);
-          console.log('parent=>',that.$parent[that.dataName].pageNo,that.$parent[that.dataName].limit)
-          console.log('query=>', this.queryedData.pageNo,this.queryedData.limit)
-          this.listLoading = false
-        })*/
+      },
+      toggleRowSelection:function(row,column){
+        this.$refs.datagridTable.toggleRowSelection(row);
+      },
+      handleSelectionChangeEvent: function(val) {
+        this.$emit("handleSelectionChange", val);
+        return false;
+      },
+      handleRowClickEvent: function(row, column, event) {
+        this.$emit("handleRowClick", row, column, event);
+        return false;
       }
-
-    },
-    watch: {
-
     }
   }
 </script>

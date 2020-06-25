@@ -11,5 +11,7 @@ const getters = {
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
   btns: state => state.permission.btns,
+
+  tripImportTemp: state => state.dict.tripImportTemp
 }
 export default getters

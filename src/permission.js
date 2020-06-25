@@ -19,9 +19,12 @@ router.beforeEach((to, from, next) => {
           var fmtRoutes = formatRoutes(menus);
           router.addRoutes(fmtRoutes);
           store.commit('SET_ROUTERS', fmtRoutes);
+          //加载404路由
+          router.addRoutes([{ path: '*', redirect: '/404', hidden: true }]);
+          //缓存权限
+          store.commit('SET_BTNS', res.data.auth);
           next({ ...to, replace: true })
         }).catch((err) => {
-          console.log(err);
           store.dispatch('FedLogOut').then(() => {
             Message.error(err || 'Verification failed, please login again')
             next({ path: '/' })
@@ -56,6 +59,7 @@ export const formatRoutes = (routes)=> {
       iconClass,
       children,
       component,
+      hiddenFlag
     } = router;
    
     if (children && children instanceof Array && children.length>0) {
@@ -67,18 +71,31 @@ export const formatRoutes = (routes)=> {
       component(resolve){
         require(['./views'+component+'.vue'], resolve)
       },
-      name:label,
+      name:(!children || !children.length)?generateName(component):null,
       meta: {
         title: label,
         icon: iconClass
       },
+      hidden:hiddenFlag=='1'?true:false,
       children: children
     };
 
-    if (fmRouter.children && !fmRouter.children.length) {
-      delete fmRouter["children"];
-    }
+    if (fmRouter.children && !fmRouter.children.length) {
+      delete fmRouter["children"];
+    }else{
+      delete fmRouter["name"];
+    }
+
     fmRoutes.push(fmRouter);
   })
   return fmRoutes;
 }
+
+/**
+ * generate router name
+ * @param {view path} component 
+ */
+function generateName(component){
+    var str= component.replace(/\/index$/,"").replace(/\//g,"");
+    return str;
+  }

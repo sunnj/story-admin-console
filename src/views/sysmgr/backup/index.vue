@@ -4,7 +4,7 @@
     <data-grid url="/sysmgr/backup/list" dataName="listQuery" ref="dataList" @dataRest="onDataRest" >
       <template slot="form">
         <el-form-item label="数据库名称">
-          <el-input v-model="listQuery.dbName" placeholder="数据库名称" size="small" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.dbName" placeholder="数据库名称" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-form-item>
       </template>
       <!--extendOperation-->
@@ -12,15 +12,15 @@
       </template>
       <!--body-->
       <template slot="body">
-        <el-table-column align="center" prop="id" label="ID" width="100px"></el-table-column>
-        <el-table-column align="center" prop="backupDate" label="备份日期" >
+        <el-table-column type="index" width="50" align="center" :index="indexMethod" fixed="left"></el-table-column>
+        <el-table-column align="center" prop="backupDate" label="备份日期" width="150">
           <template slot-scope="scope">
             <span>{{ scope.row.backupDate | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="backupName" label="备份名称" ></el-table-column>
+        <el-table-column prop="backupName" label="备份名称" width="170" show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="dbName" label="数据库名称" ></el-table-column>
-        <el-table-column prop="backupPath" label="备份路径" ></el-table-column>
+        <el-table-column prop="backupPath" label="备份路径" width="200" ></el-table-column>
         <el-table-column align="right" prop="fileSize" label="文件大小" >
           <template slot-scope="scope">
             <span>{{ scope.row.fileSize | formatFileSize }}</span>
@@ -32,14 +32,14 @@
             <el-tag :type="scope.row.status | statusTagFilter">{{ scope.row.status | statusFilter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间">
+        <el-table-column label="创建时间" width="150">
           <template slot-scope="scope">
             <span>{{ scope.row.createdTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="dropRow(scope.row)" >删除</el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="dropRow(scope.row)" title="删除" v-show="hasAuthority('sysmgr.backup.delete')"></el-button>
           </template>
         </el-table-column>
       </template>
@@ -55,7 +55,7 @@ import { parseTime,formatFileSize } from '@/utils'
 import waves from "@/directive/waves"; // Waves directive
 
 export default {
-  name: "User",
+  name: "sysmgrbackup",
   components: { DataGrid },
   directives: { waves },
   filters: {
@@ -92,13 +92,15 @@ export default {
     };
   },
   methods: {
+    indexMethod(index) {
+      return index + ((this.listQuery.pageNo-1) * this.listQuery.limit) + 1;
+    },
     onDataRest(){
       this.listQuery = {}
     },
     handleFilter() {
       this.$refs.dataList.fetchData();
     },
-    
     dropRow(row){
       this.$confirm('您确定要删除该数据吗?', '提示', {
 					confirmButtonText: '确定',

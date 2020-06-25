@@ -7,8 +7,19 @@
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">New Visits</div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num"/>
+          <div class="card-panel-text">客流总量</div>
+          <count-to :start-val="0" :end-val="perTotal" :duration="2600" class="card-panel-num"/>
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
+        <div class="card-panel-icon-wrapper icon-shopping">
+          <svg-icon icon-class="guide" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">行程总量</div>
+          <count-to :start-val="0" :end-val="tripTotal" :duration="3600" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -18,8 +29,8 @@
           <svg-icon icon-class="message" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Messages</div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num"/>
+          <div class="card-panel-text">短信消息</div>
+          <count-to :start-val="0" :end-val="smsTotal" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -29,35 +40,8 @@
           <svg-icon icon-class="money" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Purchases</div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num"/>
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
-        <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">Shoppings</div>
-          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num"/>
-        </div>
-      </div>
-    </el-col>
-  </el-row>
-  <!-- Weather -->
-  <el-row :gutter="20" class="panel-group">
-    <div class="card-title">{{weather.city}}天气</div>
-    <el-col :xs="12" :sm="12" :lg="(index<3?4:3)" class="card-panel-col" v-for="(item,index) in weather.dateList" :key="index" :label="item" >
-      <div class="wea-panel" >
-        <div :class="'wea-panel-icon-wrapper'+(index<3?' float-left':'')">
-          <img :src="item.weaImg" :alt="item.wea">
-        </div>
-        <div class="wea-panel-description" v-if="index<3">
-          <div class="wea-panel-date">{{item.date | parseTime('{m}-{d}')}}</div>
-          <div class="wea-panel-text">{{item.wea}}</div>
-          <div class="wea-panel-text">{{item.tem2}} - {{item.tem1}}</div>
+          <div class="card-panel-text">短信余额</div>
+          <count-to :start-val="0" :end-val="smsBalance" :duration="3200" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -66,9 +50,9 @@
 </template>
 
 <script>
-import { getWeather } from "@/api/dashboard"
 import { parseTime } from '@/utils'
 import CountTo from 'vue-count-to'
+import { getDataStatistics } from "@/api/dashboard"
 export default {
   components: {CountTo},
   filters: {
@@ -76,36 +60,35 @@ export default {
   },
   data() {
     return {
-      weather:{}
+      perTotal:0,
+      tripTotal:0,
+      smsTotal:0,
+      smsBalance:0
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.loadData()
+    })
   },
   methods: {
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
     },
-    showWeather() {
-      let _this = this;
-      // this.treeloading = true;
-      getWeather().then(res => {
-        res.data.dateList.forEach(element => {
-          element.weaImg=require('@/assets/weather/'+element.weaImg+'.png')
-        });
-        _this.weather= res.data;
+    loadData(){
+      getDataStatistics().then(res => {
+        this.perTotal= res.data.perTotal;
+        this.tripTotal=res.data.tripTotal;
+        this.smsTotal=res.data.smsTotal;
+        this.smsBalance=res.data.smsBalance;        
       });
     }
-  },
-  mounted() {
-    this.showWeather();
   }
 }
 </script>
-
 <style rel="stylesheet/scss" lang="scss" scoped>
 .panel-group {
-  margin-top: 18px;
-  .card-title{
-    margin:0px 10px 6px 10px;padding-left:10px;text-align:left;font-size:16px;font-weight:600;color: rgba(0, 0, 0, 0.75);
-  }
+  margin-top: 10px;
   .card-panel-col{
     margin-bottom: 22px;
   }
@@ -119,6 +102,7 @@ export default {
     background: #fff;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
     border-color: rgba(0, 0, 0, .05);
+    border-left: 4px #dddd solid;
     &:hover {
       .card-panel-icon-wrapper {
         color: #fff;
@@ -174,51 +158,6 @@ export default {
         font-size: 20px;
       }
     }
-  }
-
-  .float-left{
-    float: left;
-  }
-
-  .wea-panel {
-    height: 108px;
-    cursor: pointer;
-    font-size: 12px;
-    position: relative;
-    overflow: hidden;
-    color: #666;
-    background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-    border-color: rgba(241, 221, 221, 0.05);
-    .wea-panel-icon-wrapper {
-      padding:3px;
-      margin: 10px;
-      transition: all 0.38s ease-out;
-      border-radius: 6px;
-      background-color:#ddd;
-    }
-    .wea-panel-description {
-      float:left;
-      font-weight: bold;
-      margin: 16px 0px 0px 0px;
-      .wea-panel-date {
-        line-height: 28px;
-        color: rgba(0, 0, 0, 0.75);
-        font-size: 14px;
-        // margin-bottom: 12px;
-      }
-      .wea-panel-text {
-        line-height: 18px;
-        color: rgba(0, 0, 0, 0.45);
-        font-size: 12px;
-        // margin-bottom: 12px;
-      }
-      .wea-panel-num {
-        font-size: 20px;
-      }
-    }
-  }
-
-  
+  }  
 }
 </style>

@@ -58,3 +58,10 @@ export function editpassword(param) {
       data:param
     })
 }
+
+export function getInfo() {
+  return request({
+    url: '/sysmgr/user/info',
+    method: 'get'
+  })
+}

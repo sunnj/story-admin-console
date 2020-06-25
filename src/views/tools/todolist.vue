@@ -1,11 +1,5 @@
 <template>
   <div class="app-container lunarFullCalendar">
-    <!-- <full-calendar :events="events" class="test-fc" lang='zh'
-            first-day='1' locale="fr"
-            @changeMonth="changeMonth"    
-            @eventClick="eventClick"      
-            @dayClick="dayClick"         
-            @moreClick="moreClick"></full-calendar> -->
     <lunar-full-calendar :events="events" 
       ref="calendar"
       :config="config"
@@ -13,7 +7,7 @@
       @day-click="dayClick"></lunar-full-calendar>
 
     <el-dialog title="任务详情" :visible.sync="modifyVisible">
-      <el-form :model="taskForm" :rules="rules" ref="taskForm" label-width="70px"  label-position="right" style="width: 400px; margin-left:50px;">
+      <el-form :model="taskForm" :rules="rules" ref="taskForm" label-width="70px"  label-position="right" size="small" style="width: 500px; margin-left:20px;">
         <el-form-item label="日期" prop="taskDate" size="medium">
           <el-date-picker
             v-model="taskDate"
@@ -30,41 +24,35 @@
         <el-form-item label="标题" prop="title" >
           <el-input v-model="taskForm.title" placeholder="请输入标题..." style="width:400px"></el-input>
         </el-form-item>
-        <el-form-item label="样式" prop="level" >
+        <el-form-item label="类型" prop="level" >
           <el-select v-model="taskForm.level" class="filter-item" placeholder="请选择...">
-            <el-option v-for="item in levelOptions" :key="item.key" :label="item.key" :value="item.value"/>
+            <el-option v-for="(val,key) in levelOptions" :key="key" :label="val" :value="key"/>
           </el-select>
         </el-form-item>
         <el-form-item label="链接" prop="url" >
           <el-input v-model="taskForm.url" placeholder="请输入链接..." style="width:400px"></el-input>
         </el-form-item>
         <el-form-item label="内容" prop="taskContent" >
-          <el-input v-model="taskForm.taskContent" :autosize="{ minRows: 4, maxRows: 6}" type="textarea" style="width:400px" placeholder="请输入..."></el-input>
+          <el-input v-model="taskForm.taskContent" :autosize="{ minRows: 4, maxRows: 6}" type="textarea" style="width:500px" placeholder="请输入..."></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="dropEvent" v-if="taskForm.id">删除</el-button>
-        <el-button @click="modifyVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="danger" @click="dropEvent" v-if="taskForm.id" size="small">删除</el-button>
+        <el-button @click="modifyVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="submitForm" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
 
-
 import { LunarFullCalendar } from 'vue-lunar-full-calendar'
 import { getTodoList,save,findById,drop} from "@/api/tool/todo";
-import { parseTime } from '@/utils'
+import { parseTime,parseEnum,datetime2String} from '@/utils'
+import { todoTypeEnums} from '@/utils/enum'
 
-const levelOptions=[{'key':'工作','value':1},{'key':'会议','value':2}, 
-{'key':'约会/聚会','value':3},{'key':'旅行','value':4},{'key':'小组学习/分享','value':5}]
-
-const levelTypeKeyValue = levelOptions.reduce((acc, cur) => {
-  acc[cur.value] = cur.key
-  return acc
-}, {})
 export default {
+  name:"toolstodolist",
   components: {
     LunarFullCalendar
   },
@@ -134,17 +122,12 @@ export default {
           }
         }
       },
-
-
-
-      levelOptions:levelOptions,
+      levelOptions:todoTypeEnums,
       selectMonth:{
         start:"",
         end:"",
         // current:""
       },
-
-
       modifyVisible:false,
       taskDate:[],
       taskForm:{
@@ -161,25 +144,25 @@ export default {
         shortcuts: [{
           text: '最近一周',
           onClick(picker) {
-            const end = new Date();
             const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            const end = new Date();
+            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
             picker.$emit('pick', [start, end]);
           }
         }, {
           text: '最近一个月',
           onClick(picker) {
-            const end = new Date();
             const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            const end = new Date();
+            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
             picker.$emit('pick', [start, end]);
           }
         }, {
           text: '最近三个月',
           onClick(picker) {
-            const end = new Date();
             const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            const end = new Date();
+            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
             picker.$emit('pick', [start, end]);
           }
         }]
@@ -275,23 +258,23 @@ export default {
     },
     getColor(level){
       switch(level){
-        case 1:
+        case "1":
           return "#dd4b39";
-        case 2:
+        case "2":
           return "#3c8dbc";
-        case 3:
+        case "3":
           return "#00c0ef";
-        case 4:
+        case "4":
           return "#f39c12"
-        case 5:
+        case "5":
           return "#00a65a";
         default:
           return null;
       }
     },
     submitForm(){
-      this.taskForm.start= this.taskDate[0];
-      this.taskForm.end= this.taskDate[1];
+      this.taskForm.start= parseTime(this.taskDate[0],"{y}-{m}-{d} {h}:{i}");
+      this.taskForm.end= parseTime(this.taskDate[1],"{y}-{m}-{d} {h}:{i}");
       this.$refs["taskForm"].validate((valid) => {
         if (valid) {
 				  let para = this.taskForm;

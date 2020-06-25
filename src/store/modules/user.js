@@ -1,4 +1,5 @@
-import { login, logout, getInfo,loginerp } from '@/api/login'
+import { login, logout} from '@/api/login'
+import { getInfo} from '@/api/sysmgr/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -35,9 +36,9 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
-          // const data = response.data
-          // setToken(data.token)
-          // commit('SET_TOKEN', data.token)
+          const data = response.data
+          setToken(data)
+          commit('SET_TOKEN', data)
           resolve()
         }).catch(error => {
           reject(error)
@@ -45,19 +46,19 @@ const user = {
       })
     },
 
-    // 登录ERP
-    LoginERP({ commit }, sso_service_ticket) {
-      return new Promise((resolve, reject) => {
-        loginerp(sso_service_ticket).then(response => {
-          // const data = response.data
-          // setToken(data.token)
-          // commit('SET_TOKEN', data.token)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
+    // // 登录ERP
+    // LoginERP({ commit }, sso_service_ticket) {
+    //   return new Promise((resolve, reject) => {
+    //     loginerp(sso_service_ticket).then(response => {
+    //       const data = response.data
+    //       setToken(data)
+    //       commit('SET_TOKEN', data)
+    //       resolve()
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
 
     // 获取用户信息
     GetInfo({ commit, state }) {

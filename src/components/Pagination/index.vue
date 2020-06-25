@@ -29,12 +29,12 @@ export default {
     },
     limit: {
       type: Number,
-      default: 20
+      default: PAGE_SIZE
     },
     pageSizes: {
       type: Array,
       default() {
-        return [10, 20, 30, 50]
+        return PAGE_SIZES
       }
     },
     layout: {
@@ -92,7 +92,7 @@ export default {
 <style scoped>
 .pagination-container {
   background: #fff;
-  padding: 32px 16px;
+  padding: 8px 10px;
 }
 .pagination-container.hidden {
   display: none;

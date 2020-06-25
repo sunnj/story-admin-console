@@ -1,4 +1,5 @@
 global.RESULT_SUCCESS_CODE = 20000;   // 全局返回数据成功标识位
+global.RESULT_IN_PROCESS_CODE = 20000;  // 全局返回数据执行中的标识
 
 // 分页用
 global.PAGE_SIZES = [20, 40, 60];   // 每页显示条数 选择框数组

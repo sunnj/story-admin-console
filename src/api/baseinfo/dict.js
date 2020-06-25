@@ -39,3 +39,26 @@ export function batchSave(param) {
       data:param
     })
 }
+
+export function queryDictCombo(codes) {
+  return queryDict(codes,'/baseinfo/dict/find_dicts')
+}
+
+export function queryGroupDictCombo(codes) {
+  return queryDict(codes,'/baseinfo/dict/find_group_dicts')
+}
+
+function queryDict(codes, uri){
+  var param = null;
+  if(codes instanceof Array){
+    param = {"code":codes.join(",")}
+  }else{
+    param={"code":codes}
+  }
+  return request({
+    url: uri,
+    method: 'post',
+    data:param
+  })
+}
+

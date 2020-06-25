@@ -1,39 +1,44 @@
 {
-  "name": "vue-admin-template",
-  "version": "3.8.0",
-  "license": "MIT",
-  "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "story-admin-console",
+  "version": "0.1.0",
+  "private": true,
+  "author": "nj.sun",
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "build:prod": "cross-env NODE_ENV=production env_config=prod node build/build.js",
-    "build:sit": "cross-env NODE_ENV=production env_config=sit node build/build.js",
-    "start": "npm run dev",
-    "build": "node build/build.js",
-    "build:report": "npm_config_report=true npm run build",
+    "dev": "vue-cli-service serve",
+    "build:prod": "vue-cli-service build",
+    "build:stage": "vue-cli-service build --mode staging",
+    "preview": "node build/index.js --preview",
     "lint": "eslint --ext .js,.vue src",
-    "test": "npm run lint",
-    "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
+    "test:unit": "jest --clearCache && vue-cli-service test:unit",
+    "test:ci": "npm run lint && npm run test:unit",
+    "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
+    "new": "plop"
   },
   "dependencies": {
     "axios": "0.18.1",
     "codemirror": "^5.49.0",
+    "core-js": "^3.4.3",
+    "echarts": "4.2.1",
     "element-ui": "2.10.1",
     "js-cookie": "2.2.0",
     "jsonlint": "^1.6.3",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
+    "screenfull": "^5.0.1",
     "script-loader": "^0.7.2",
-    "vue": "2.5.17",
+    "vue": "^2.6.10",
     "vue-count-to": "^1.0.13",
     "vue-lunar-full-calendar": "^1.2.7",
     "vue-router": "3.0.1",
     "vuex": "3.0.1"
   },
   "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.1.0",
+    "@vue/cli-plugin-eslint": "^4.1.0",
+    "@vue/cli-service": "^4.1.0",
     "autoprefixer": "8.5.0",
     "babel-core": "6.26.0",
-    "babel-eslint": "8.2.6",
+    "babel-eslint": "^10.0.3",
     "babel-helper-vue-jsx-merge-props": "2.0.3",
     "babel-loader": "7.1.5",
     "babel-plugin-syntax-jsx": "6.18.0",
@@ -44,10 +49,10 @@
     "chalk": "2.4.1",
     "copy-webpack-plugin": "4.5.2",
     "css-loader": "1.0.0",
-    "eslint": "4.19.1",
+    "eslint": "^5.16.0",
     "eslint-friendly-formatter": "4.0.1",
     "eslint-loader": "2.0.0",
-    "eslint-plugin-vue": "4.7.1",
+    "eslint-plugin-vue": "^5.0.0",
     "eventsource-polyfill": "0.9.6",
     "file-loader": "1.1.11",
     "friendly-errors-webpack-plugin": "1.7.0",
@@ -73,20 +78,29 @@
     "url-loader": "1.0.1",
     "vue-loader": "15.3.0",
     "vue-style-loader": "4.1.2",
-    "vue-template-compiler": "2.5.17",
+    "vue-template-compiler": "^2.6.10",
     "webpack": "4.16.5",
     "webpack-bundle-analyzer": "3.3.2",
     "webpack-cli": "3.1.0",
     "webpack-dev-server": "3.1.11",
     "webpack-merge": "4.1.4"
   },
-  "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "last 2 versions"
   ]
 }

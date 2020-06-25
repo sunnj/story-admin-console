@@ -27,13 +27,14 @@
                 <el-button
                   type="text"
                   size="mini"
+                  v-show="hasAuthority('sysmgr.resource.save')"
                   @click="($event) => append(data,$event)">
                   <i class="el-icon-plus" />
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
-                  v-if="data.id!=0"
+                  v-if="data.id!=0 && hasAuthority('sysmgr.resource.delete')"
                   @click="($event) => remove(node, data,$event)">
                   <i class="el-icon-close" />
                 </el-button>
@@ -44,7 +45,7 @@
 
         <el-main>
           <transition name="el-fade-in">
-            <el-form ref="menuForm" :rules="rules" :model="formData" v-show="modifyVisible" label-width="100px" style="width: 400px;">
+            <el-form ref="menuForm" :rules="rules" :model="formData" v-show="modifyVisible" label-width="100px" size="small" style="width: 400px;">
               <el-form-item label="权限编码" prop="code">
                 <el-cascader :options="options" props.expandTrigger="hover" :show-all-levels="false" :props="props_auth" style="width: 100%;"
                   v-model="auth_path" >
@@ -69,8 +70,8 @@
               <el-input v-model.number="formData.showOrder" placeholder="请输入..."></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submitForm" size="small">保存</el-button>
-                <el-button type="danger" v-show="nodeDeleteVisible" @click="drop" size="small">删除</el-button>
+                <el-button type="primary" @click="submitForm" size="small" v-show="hasAuthority('sysmgr.resource.save')">保存</el-button>
+                <el-button type="danger" v-show="nodeDeleteVisible && hasAuthority('sysmgr.resource.delete')" @click="drop" size="small" >删除</el-button>
               </el-form-item>
             </el-form>
           </transition>
@@ -85,6 +86,7 @@ import { getList,save,drop } from "@/api/sysmgr/resource";
 import { getList as getAuthList} from "@/api/sysmgr/authority";
 import { Message, MessageBox } from 'element-ui'
 export default {
+  name:"sysmgrmenu",
   data() {
     return {
       filterText: "",           //过滤条件
@@ -240,7 +242,7 @@ export default {
         this.formData.pid = data.parentId;
         this.formData.fullId= data.fullId;
         this.formData.authorityId= data.authorityId;
-        this.formData.hiddenFlag = data.hiddenFlag;
+        this.formData.hiddenFlag = data.hiddenFlag=='1'?true:false;
 
       }else{
         this.modifyVisible=false;
@@ -271,6 +273,7 @@ export default {
             param.id= null
           }
           param.authorityId = this.auth_path[this.auth_path.length - 1];
+          param.hiddenFlag=param.hiddenFlag?"1":"0";
 			    save(param).then((res) => {
             this.modifyVisible = false
             Message({
@@ -327,7 +330,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 13.5px;
+    font-size: 13px;
     padding-right: 8px;
 
   }

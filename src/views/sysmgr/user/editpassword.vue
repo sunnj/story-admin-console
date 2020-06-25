@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="userForm" :rules="rules" ref="userForm" label-width="80px"  label-position="left" style="width: 400px;margin:0px auto;">
+    <el-form :model="userForm" :rules="rules" ref="userForm" label-width="80px"  label-position="left" size="small" style="width: 400px;margin:0px auto;">
       <el-form-item label="原密码" prop="password" >
         <el-input v-model="userForm.password" type="password" placeholder="请输入密码"></el-input>
       </el-form-item>
@@ -13,8 +13,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" style="text-align:center;">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
-      <el-button @click="$router.push({path:'/'})">取 消</el-button>
+      <el-button type="primary" @click="submitForm" size="small">确 定</el-button>
+      <el-button @click="$router.push({path:'/'})" size="small">取 消</el-button>
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@
 import { editpassword } from "@/api/sysmgr/user";
 import { Message } from 'element-ui'
 export default {
-  name: "User",
+  name: "sysmgreditpassword",
   data() {
     var validatePass2 = (rule, value, callback) => {
       if (value !== this.userForm.newPassword) {

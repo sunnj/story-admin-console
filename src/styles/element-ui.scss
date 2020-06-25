@@ -16,6 +16,9 @@
   position: relative;
   margin: 0 auto;
 }
+.el-dialog__body{
+  padding: 10px 20px 20px;
+}
 
 //element ui upload
 .upload-container {
@@ -30,18 +33,18 @@
 
 /*menu-height,font-size*/
 .el-menu-item{
-  height: 45px;
-  line-height: 45px;
-  font-size: 13.5px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 13px;
 }
 .el-submenu .el-menu-item {
-    height: 45px;
-    line-height: 45px;
+    height: 40px;
+    line-height: 40px;
 }
 .el-submenu__title {
-  height: 45px;
-  line-height: 45px;
-  font-size:13.5px;
+  height: 40px;
+  line-height: 40px;
+  font-size:13px;
 }
 /*tag padding*/
 .el-tag{
@@ -50,25 +53,90 @@
 }
 
 /*table padding*/
-.el-table th {
-    padding: 8px 0;
-}
-.el-table td {
+.dataGrid .el-table th,.dialogTable .el-table th{
     padding: 6px 0;
 }
-.el-table {
-  font-size: 13.5px;
+.dataGrid .el-table td,.dialogTable .el-table td{
+    padding: 4px 0;
+}
+.dataGrid .el-table,.dialogTable .el-table{
+  font-size: 13px;
 }
 
+/*sort icon*/
+.dataGrid .el-table .caret-wrapper{
+  height:26px;
+}
+.dataGrid .el-table .sort-caret.ascending{
+  top:0px;
+}
+.dataGrid .el-table .sort-caret.descending{
+  bottom:2px;
+}
 
 .el-form-item__label {
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 .el-tree-node__label{
-  font-size:13.5px;
+  font-size:13px;
 }
 
 .el-tooltip__popper {
   max-width: 400px;
+}
+
+/*处理chrome下table错位问题*/
+body .el-table th.gutter{
+  display: table-cell!important;
+}
+
+body .el-table colgroup.gutter{
+  display: table-cell!important;
+}
+
+/*给table表头增加默认背景*/
+.dataGrid .el-table th,.dialogTable .el-table th{
+  background-color:#FAFAFA
+}
+/*处理select多选换行问题*/
+.el-select__tags {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.el-collapse-item__header{
+  height:38px;
+  line-height:38px;
+}
+
+.el-collapse-item__content{
+  padding-bottom:5px;
+}
+// 查询条件的form
+.search-handler .el-form-item {
+  margin-bottom: 5px;
+}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/  
+::-webkit-scrollbar  
+{  
+    width: 8px;  /*滚动条宽度*/
+    height: 8px;  /*滚动条高度*/
+}  
+  
+// /*定义滚动条轨道 内阴影+圆角*/  
+// ::-webkit-scrollbar-track  
+// {  
+//     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);  
+//     border-radius: 10px;  /*滚动条的背景区域的圆角*/
+//     background-color: #ddd;/*滚动条的背景颜色*/  
+// }  
+  
+/*定义滑块 内阴影+圆角*/  
+::-webkit-scrollbar-thumb  
+{  
+    border-radius: 10px;  /*滚动条的圆角*/
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);  
+    background-color: #eee;  /*滚动条的背景颜色*/
 }
