@@ -15,7 +15,7 @@
     "new": "plop"
   },
   "dependencies": {
-    "axios": "0.18.1",
+    "axios": "0.21.2",
     "codemirror": "^5.49.0",
     "core-js": "^3.4.3",
     "echarts": "4.2.1",
